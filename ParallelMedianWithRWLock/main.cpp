@@ -56,11 +56,13 @@ void* median_thread_func(void* args){
     pthread_mutex_unlock(&reader_count_mutex);
     pthread_mutex_unlock(&readTry);
     pthread_mutex_unlock(&reader_enters_mutex);
+    
     //CRITICAL SECTION
     std::vector<int>::const_iterator first = data.begin() + begin;
     std::vector<int>::const_iterator last = data.begin() + end;
     std::vector<int> newVec(first, last);
     int median = calculate_median(newVec);
+    
     pthread_mutex_lock(&reader_count_mutex);
     reader_count --;
     if (reader_count == 0) {
@@ -74,10 +76,12 @@ void* median_thread_func(void* args){
     }
     pthread_mutex_unlock(&writer_count_mutex);
     pthread_mutex_lock(&resource);
+    
     //CRITICAL SECTION
     int element = (begin + end)/2;
     std::vector<int>::iterator it = data.begin() + element;
     *it = median;
+    
     pthread_mutex_unlock(&resource);
     pthread_mutex_lock(&writer_count_mutex);
     writer_count--;
